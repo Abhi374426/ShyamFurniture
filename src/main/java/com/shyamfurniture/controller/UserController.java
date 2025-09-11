@@ -2,6 +2,7 @@ package com.shyamfurniture.controller;
 
 import com.shyamfurniture.dtos.ApiResponseaMessage;
 import com.shyamfurniture.dtos.CreateUserDto;
+import com.shyamfurniture.dtos.PageableResponse;
 import com.shyamfurniture.dtos.UpdateUserDto;
 import com.shyamfurniture.exception.BadRequestException;
 import com.shyamfurniture.service.UserService;
@@ -46,16 +47,13 @@ public class UserController {
     }
     @GetMapping
     public ResponseEntity<?> getAll(@RequestParam(value = "pageNumber",defaultValue = "0",required = false) int pageNumber
-            ,@RequestParam(value = "pageSize",defaultValue = "10",required = false) int pageSize) {
-        List<CreateUserDto> createUserDto =userService.getAll(pageNumber,pageSize);
-        ApiResponseaMessage<List<CreateUserDto>> apiResponseaMessage= ApiResponseaMessage.<List<CreateUserDto>>builder()
-                .message("SUCCESS")
-                .success(true)
-                .status(HttpStatus.OK)
-                .data(createUserDto)
-                .build();
+            ,@RequestParam(value = "pageSize",defaultValue = "10",required = false) int pageSize,
+                                    @RequestParam(value = "sortBy",defaultValue = "name",required = false) String sortBy,
+                                    @RequestParam(value = "sortDir",defaultValue = "asc",required = false) String sortDir) {
+        PageableResponse<CreateUserDto> createUserDto =userService.getAll(pageNumber,pageSize,sortBy,sortDir);
 
-        return new ResponseEntity<>(apiResponseaMessage,HttpStatus.OK);
+
+        return new ResponseEntity<>(createUserDto,HttpStatus.OK);
 
     }
     @GetMapping("/{id}")

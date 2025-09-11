@@ -1,6 +1,7 @@
 package com.shyamfurniture.service;
 
 import com.shyamfurniture.dtos.CreateUserDto;
+import com.shyamfurniture.dtos.PageableResponse;
 import com.shyamfurniture.dtos.UpdateUserDto;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface UserService {
     UpdateUserDto update(String id, UpdateUserDto updateUserDto);
 
     //find All
-    List<CreateUserDto> getAll(int pageNumber,int pageSize);
+    PageableResponse<CreateUserDto> getAll(int pageNumber, int pageSize, String sortBy, String sortDir);
 
     //find by id
     CreateUserDto findByID(String id);

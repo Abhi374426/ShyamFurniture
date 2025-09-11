@@ -1,11 +1,13 @@
 package com.shyamfurniture.service.impl;
 
 import com.shyamfurniture.dtos.CreateUserDto;
+import com.shyamfurniture.dtos.PageableResponse;
 import com.shyamfurniture.dtos.UpdateUserDto;
 import com.shyamfurniture.entity.User;
 import com.shyamfurniture.exception.BadRequestException;
 import com.shyamfurniture.exception.NotFoundException;
 import com.shyamfurniture.exception.ResourceAlreadyExistsException;
+import com.shyamfurniture.helper.Helper;
 import com.shyamfurniture.repositories.UserRepo;
 import com.shyamfurniture.service.UserService;
 import com.shyamfurniture.utils.Utils;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -62,12 +65,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<CreateUserDto> getAll(int pageNumber,int pageSize) {
-        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+    public PageableResponse<CreateUserDto> getAll(int pageNumber,int pageSize,String sortBy,String sortDir) {
+        Sort sort=(sortDir.equalsIgnoreCase("desc")) ?(Sort.by(sortBy).descending()) :(Sort.by(sortBy).ascending()) ;
+        Pageable pageable= PageRequest.of(pageNumber,pageSize,sort);
         Page<User> pageUsers = userRepo.findAll(pageable);
-       List<User> users= pageUsers.getContent();
-        List<CreateUserDto> createUserDtoList = users.stream().map(user -> modelMapper.map(user, CreateUserDto.class)).toList();
-        return createUserDtoList;
+       PageableResponse<CreateUserDto> response= Helper.getPageableResponse(pageUsers,CreateUserDto.class);
+        return response;
     }
 
     @Override
