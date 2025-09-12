@@ -1,7 +1,7 @@
 package com.shyamfurniture.service.impl;
 
 import com.shyamfurniture.exception.BadRequestException;
-import com.shyamfurniture.service.FileUplodeService;
+import com.shyamfurniture.service.FileUploadService;
 import com.shyamfurniture.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,14 +12,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Service
-public class FileUplodeServiceImpl implements FileUplodeService {
+public class FileUploadServiceImpl implements FileUploadService {
 
 
-    private Logger logger= LoggerFactory.getLogger(FileUplodeServiceImpl.class);
+    private Logger logger= LoggerFactory.getLogger(FileUploadServiceImpl.class);
     @Override
     public String uploadFile(MultipartFile file, String path) throws IOException {
        String originalName=file.getOriginalFilename();
@@ -49,6 +48,9 @@ public class FileUplodeServiceImpl implements FileUplodeService {
 
     @Override
     public InputStream getResource(String path, String name) {
+
+        String pathName=path+name;
+        File file=File.createTempFile()
         return null;
     }
 }
