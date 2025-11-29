@@ -5,14 +5,21 @@ import com.shyamfurniture.dtos.CreateUserDto;
 import com.shyamfurniture.dtos.PageableResponse;
 import com.shyamfurniture.dtos.UpdateUserDto;
 import com.shyamfurniture.exception.BadRequestException;
+import com.shyamfurniture.service.FileUploadService;
 import com.shyamfurniture.service.UserService;
 //import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -21,13 +28,17 @@ import java.util.Map;
 public class UserController {
     @Autowired
     private UserService userService;
+    Logger logger= LoggerFactory.getLogger(UserController.class);
+
+    @Value("${user.profile.image.path}")
+    private String imageUploadPath;
     @PostMapping("/create")
     public ResponseEntity<?> create(@Valid @RequestBody CreateUserDto createUserDto){
      CreateUserDto createUserDto1 =  userService.create(createUserDto);
         ApiResponseaMessage<CreateUserDto> apiResponseaMessage = ApiResponseaMessage.<CreateUserDto>builder()
                 .message("CREATED")
                 .success(true)
-                .status(HttpStatus.CREATED)
+               .status(HttpStatus.CREATED)
                 .data(createUserDto1)
                 .build();
 
@@ -95,7 +106,7 @@ public class UserController {
         return new ResponseEntity<>(responseaMessage,HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletedById(@PathVariable String id,@RequestBody Map<String,String> requestBody){
+    public ResponseEntity<?> deletedById(@PathVariable String id,@RequestBody Map<String,String> requestBody) throws IOException {
         String updateBy= requestBody.get("updateBy");
         if (updateBy.isEmpty() ||updateBy==null){
                 throw new BadRequestException("updateBy is required!!");
@@ -111,6 +122,4 @@ public class UserController {
 
         return new ResponseEntity<>(responseaMessage,HttpStatus.OK);
     }
-
-
 }

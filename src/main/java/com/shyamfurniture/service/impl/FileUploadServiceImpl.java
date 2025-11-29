@@ -8,9 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -34,7 +32,7 @@ public class FileUploadServiceImpl implements FileUploadService {
 
            if (!folder.exists()){
                //create the folder
-               folder.mkdir();
+               folder.mkdirs();
            }
            //copy file
            Files.copy(file.getInputStream(), Paths.get(fullPathWithExtension));
@@ -49,8 +47,16 @@ public class FileUploadServiceImpl implements FileUploadService {
     @Override
     public InputStream getResource(String path, String name) {
 
-        String pathName=path+name;
-        File file=File.createTempFile()
-        return null;
+
+        try {
+            String fullPathWithFileName=path+name;
+            return  new FileInputStream(fullPathWithFileName);
+        }
+        catch (Exception e){
+            logger.info("getResource : {}",e.getMessage(),e);
+            return null;
+        }
+
+
     }
 }

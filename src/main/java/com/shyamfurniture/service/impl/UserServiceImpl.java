@@ -11,24 +11,35 @@ import com.shyamfurniture.helper.Helper;
 import com.shyamfurniture.repositories.UserRepo;
 import com.shyamfurniture.service.UserService;
 import com.shyamfurniture.utils.Utils;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepo userRepo;
     @Autowired
     private ModelMapper modelMapper;
+    @Value("${user.profile.image.path}")
+    private String fullImagePath;
+
 
     @Override
     public CreateUserDto create(CreateUserDto createUserDto) {
@@ -80,8 +91,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String deleted(String id,String updateBy) {
+    public String deleted(String id,String updateBy){
        User user= userRepo.findById(id).orElseThrow(() -> new NotFoundException("User not found with given id !!"));
+
+       String fullPath=fullImagePath+user.getImageName();
+     try {
+         Path path= Paths.get(fullPath);
+         Files.delete(path);
+     }
+     catch (NoSuchFileException ex){
+     log.info("User image is not found in folder ");
+     ex.printStackTrace();
+     }
+     catch (IOException ex){
+      ex.printStackTrace();
+     }
+
 
         user.setDeleted(true);
         user.setUpdateBy(updateBy);

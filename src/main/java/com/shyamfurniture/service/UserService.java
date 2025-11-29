@@ -4,6 +4,7 @@ import com.shyamfurniture.dtos.CreateUserDto;
 import com.shyamfurniture.dtos.PageableResponse;
 import com.shyamfurniture.dtos.UpdateUserDto;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface UserService {
@@ -21,7 +22,7 @@ public interface UserService {
     CreateUserDto findByID(String id);
 
     // deleted user
-    String deleted(String id,String updateByy);
+    String deleted(String id,String updateByy) throws IOException;
 
     //find by email
 
