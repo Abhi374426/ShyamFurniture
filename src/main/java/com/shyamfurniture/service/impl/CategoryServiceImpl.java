@@ -77,4 +77,17 @@ public class CategoryServiceImpl implements CategoryService {
         return "category successfully deleted !";
     }
 
+    @Override
+    public void updateCategoryImageName(String imageName , String categoryId) {
+     Category category=    categoryRepo.findById(categoryId).orElseThrow(()->new NotFoundException(String.format(AppConstant.NOT_FOUND,"Category",categoryId)));
+     category.setCoverImage(imageName);
+     categoryRepo.save(category);
+    }
+
+    @Override
+    public CategoryResponseDto getById(String categoryId) {
+     Category category=   categoryRepo.findById(categoryId).orElseThrow(()->new NotFoundException(String.format(AppConstant.NOT_FOUND,"Category",categoryId)));
+     return  modelMapper.map(category,CategoryResponseDto.class);
+    }
+
 }

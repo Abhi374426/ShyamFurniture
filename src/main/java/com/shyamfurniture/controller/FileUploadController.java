@@ -54,10 +54,18 @@ public class FileUploadController {
                 .build();
         return new ResponseEntity<>(imageResponse, HttpStatus.OK);
     }
-    @GetMapping("/serverFile/{path}/{name}")
-    public ResponseEntity<?> serveFile(@PathVariable String path ,@PathVariable String name) throws FileNotFoundException {
-      InputStream response=  fileUploadService.getResource(path,name);
-      return new ResponseEntity<>(response,HttpStatus.OK);
+    @GetMapping("/serverFile/{name}")
+    public ResponseEntity<?> serveFile(@PathVariable String name) throws FileNotFoundException {
+        InputStream response=  fileUploadService.getResource("C:/images/users/",name);
+        if(response == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("File Not Found");
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(new InputStreamResource(response));
+//      return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
     //serve file
